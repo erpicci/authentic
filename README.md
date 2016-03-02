@@ -32,9 +32,9 @@ The whole process is as simple as:
    and password
 -  The **Authentication Provider** checks whether user is who she claims
    to be
--  In case of success, the *Authentication Provider* releases an _access
-   token_ to the **Client**
--  **Client** can (and must) use her _access token_ to authenticate, in
+-  In case of success, the **Authentication Provider** releases an *access
+   token* to the **Client**
+-  **Client** can (and must) use her *access token* to authenticate, in
    place of username and password
 -  **Client** will send requests to **Resource Server(s)** sending her
    *access token*; server will use the token to authenticate the user
