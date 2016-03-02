@@ -40,6 +40,7 @@ final class AuthProvider
 {
     /**
      * Connects to the database.
+     * @example examples/auth_provider.php 29 2 Creates a provider.
      */
     public function __construct()
     {
@@ -63,6 +64,7 @@ final class AuthProvider
      * @param string $id       Identifier of the new user
      * @param string $password Password of the new user
      * @return self This AuthProvider itself
+     * @example examples/auth_provider.php 33 2 Registers a new user.
      * @todo Enforce input validation
      */
     public function register($id, $password)
@@ -87,6 +89,7 @@ final class AuthProvider
      * @param string $password Password of the user
      * @return AccessToken|bool An access token if the user correctly
      *                          authenticated, false otherwise
+     * @example examples/auth_provider.php 37 5 Authenticates an user.
      */
     public function authenticate($id, $password)
     {
@@ -112,6 +115,7 @@ final class AuthProvider
      * Tells whether an access token is valid.
      * @param string $access_token Access token to validate
      * @return string|bool Identifier if access token is valid, false otherwise
+     * @example examples/auth_provider.php 44 5 Verifies an access token.
      */
     public function verify($access_token)
     {
@@ -132,6 +136,7 @@ final class AuthProvider
      * Access token is destroyed.
      * @param string $id Identifier of the user
      * @return self This AuthManager itself
+     * @example examples/auth_provider.php 51 2 Terminates a session.
      */
     public function logout($id)
     {
@@ -148,6 +153,7 @@ final class AuthProvider
      * Deletes an user.
      * @param string $id Identifier of the user to delete
      * @return self This AuthManager itself
+     * @example examples/auth_provider.php 55 2 Deletes an user.
      */
     public function delete($id)
     {
