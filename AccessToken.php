@@ -34,6 +34,7 @@ final class AccessToken
     /**
      * Sets identifier and builds access token.
      * @param string $id Identifier of an user
+     * @example examples/access_token.php 29 2 Creates an access token.
      */
     public function __construct($id)
     {
@@ -45,6 +46,7 @@ final class AccessToken
     /**
      * Returns identifier of the owner of this token.
      * @return string Identifier of the owner of this token
+     * @example examples/access_token.php 33 2 Prints identifier of owner.
      */
     public function getId()
     {
@@ -54,6 +56,7 @@ final class AccessToken
     /**
      * Returns this access token as a string.
      * @return string This access token
+     * @example examples/access_token.php 37 2 Interprets as a string.
      */
     public function __tostring()
     {
@@ -64,6 +67,7 @@ final class AccessToken
     /**
      * Refreshes this access token.
      * @return self This access token itself
+     * @example examples/access_token.php 41 2 Refreshes access token.
      */
     public function refresh()
     {
@@ -76,7 +80,7 @@ final class AccessToken
     /**
      * Deletes this access token.
      * Access token is invalidated.
-     * @return self This access token itself
+     * @example examples/access_token.php 45 2 Deletes access token.
      */
     public function delete()
     {
