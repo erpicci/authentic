@@ -1,0 +1,3 @@
+doc/phpdoc/*
+doc/.htaccess
+doc/ast.dump
