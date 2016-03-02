@@ -28,18 +28,18 @@ _Access tokens_ can be used to temporary delegate others.
 
 ## How it works
 The whole process is as simple as:
-1. *Client* contacts the *Authentication Provider*, giving her username
+-  *Client* contacts the *Authentication Provider*, giving her username
    and password
-2. The *Authentication Provider* checks whether user is who she claims
+-  The *Authentication Provider* checks whether user is who she claims
    to be
-3. In case of success, the *Authentication Provider* releases an _access
+-  In case of success, the *Authentication Provider* releases an _access
    token_ to the *Client*
-4. *Client* can (and must) use her _access token_ to authenticate, in
+-  *Client* can (and must) use her _access token_ to authenticate, in
    place of username and password
-5. *Client* will send requests to *Resource Server(s)* sending her
+-  *Client* will send requests to *Resource Server(s)* sending her
    _access token_; server will use the token to authenticate the user
    (and, then, performs regular checks to ensure confidentiality)
-6. Optionally, *client* can send her _access token_ to other trusted
+-  Optionally, *client* can send her _access token_ to other trusted
    *clients* (either different processes, different machines or
    different people); those *clients* will be authenticated as original
    one
