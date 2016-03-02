@@ -1,3 +1,4 @@
 doc/phpdoc/*
 doc/.htaccess
 doc/ast.dump
+database.ini
