@@ -13,6 +13,8 @@ Authentic is a library which offers a secure authentication system. It is
 completely written in PHP and it is thought for a web environment,
 althought it can be used in other contexts.
 
+![logo](https://raw.githubusercontent.com/erpicci/authentic/master/doc/img/authentic.png "Authentic")
+
 Authentic is based on the idea of having an _access token_ which can be
 used to authenticate an user. By doing so, it is no longer necessary to
 keep a session server-side, nor to continously send username and password
@@ -43,6 +45,7 @@ The whole process is as simple as:
    *clients* (either different processes, different machines or
    different people); those *clients* will be authenticated as original
    one
+![logo](https://raw.githubusercontent.com/erpicci/authentic/master/doc/img/authentic-token.png "Access token")
 
 
 ## Dependencies
