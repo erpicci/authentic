@@ -25,6 +25,7 @@ namespace Authentic;
 
 /**
  * Access token.
+ * This class exhibits a Fluent Interface through Method Chaining.
  *
  * @package Authentic
  * @author  Marco Zanella <mz@openmailbox.org>

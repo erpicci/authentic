@@ -21,9 +21,9 @@
  * @copyright 2016 Marco Zanella
  * @license   GNU General Public License, version 3
  */
-require_once "../../AccessToken.php";
+namespace Authentic;
 
-use Authentic\AccessToken;
+require_once "../../AccessToken.php";
 
 
 // Creates a new access token
