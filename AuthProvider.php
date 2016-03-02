@@ -96,10 +96,51 @@ final class AuthProvider
 
         $record = $stm->fetch();
         if (!password_verify($password, $record['password'])) {
+            $this->loginFail($id);
             return false;
         }
 
-        return new AccessToken($id);
+        $access_token = new AccessToken($id);
+        $this->loginSuccess($id, $access_token);
+
+        return $access_token;
+    }
+
+
+
+    /**
+     * Tells whether an access token is valid.
+     * @param string $access_token Access token to validate
+     * @return string|bool Identifier if access token is valid, false otherwise
+     */
+    public function verify($access_token)
+    {
+        $query = "SELECT COUNT(id), id FROM authentic_user "
+               . "WHERE access_token = ?";
+        $stm   = $this->dbh->prepare($query);
+        $stm->execute([$access_token]);
+
+        $record = $stm->fetch();
+
+        return ($record['COUNT(id)'] == 1) ? $record['id'] : false;
+    }
+
+
+
+    /**
+     * Logs out an user.
+     * Access token is destroyed.
+     * @param string $id Identifier of the user
+     * @return self This AuthManager itself
+     */
+    public function logout($id)
+    {
+        $query = "UPDATE authentic_user SET access_token = '' WHERE id = :id";
+        $stm   = $this->dbh->prepare($query);
+        $stm->bindParam(':id', $id);
+        $stm->execute();
+
+        return $stm;
     }
 
 
@@ -116,6 +157,63 @@ final class AuthProvider
 
         return $this;
     }
+
+
+
+    /**
+     * Registers a successful login attempt.
+     * Sets an access token for an user.
+     * @param string      $id           Identifier of the user
+     * @param AccessToken $access_token New access token for the user
+     * @return self This AuthManager itself
+     */
+    private function loginSuccess($id, $access_token)
+    {
+        $query = "UPDATE authentic_user "
+               . "SET access_token = :access_token, last_login = :last_login, "
+               . "failed_login = 0 "
+               . "WHERE id = :id";
+        $stm   = $this->dbh->prepare($query);
+        $stm->bindParam(':id', $id);
+        $stm->bindParam(':access_token', $access_token);
+        $stm->bindParam(':last_login', $now);
+
+        $now = time();
+
+        $stm->execute();
+
+        return $this;
+    }
+
+
+
+    /**
+     * Registers a failed login attempt.
+     * Number of consecutive failed login is increased by one.
+     * @param string $id Identifier of the user
+     * @return self This AuthManager itself
+     */
+    private function loginFail($id)
+    {
+        $query = "SELECT failed_login FROM authentic_user WHERE id = ?";
+        $stm   = $this->dbh->prepare($query);
+        $stm->execute([$id]);
+        $record = $stm->fetch();
+
+        $attempts = $record['failed_login'] or 0;
+        $attempts++;
+
+        $query = "UPDATE authentic_user "
+               . "SET failed_login = :attempts "
+               . "WHERE id = :id";
+        $stm   = $this->dbh->prepare($query);
+        $stm->bindParam(':id', $id);
+        $stm->bindParam(':attempts', $attempts);
+        $stm->execute();
+
+        return $this;
+    }
+
 
 
     /** Connection to database. */
