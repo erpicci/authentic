@@ -39,12 +39,19 @@ use \PDO;
 final class AuthProvider
 {
     /**
+     * Logarithm of maximum delay between failed login attempts.
+     */
+    const MAX_DELAY = 10;
+
+
+
+    /**
      * Connects to the database.
      * @example examples/auth_provider.php 29 2 Creates a provider.
      */
     public function __construct()
     {
-        $db       = parse_ini_file('database.ini');
+        $db       = parse_ini_file('authentic.ini');
         $dsn      = 'mysql:host=' . $db['host'] . ';dbname=' . $db['name'];
         $username = $db['user'];
         $password = $db['pass'];
@@ -65,7 +72,6 @@ final class AuthProvider
      * @param string $password Password of the new user
      * @return self This AuthProvider itself
      * @example examples/auth_provider.php 33 2 Registers a new user.
-     * @todo Enforce input validation
      */
     public function register($id, $password)
     {
@@ -85,6 +91,10 @@ final class AuthProvider
 
     /**
      * Authenticates an user.
+     * Checks whether user provided correct identifier and password. If
+     * authentication fails, user must wait before submitting another
+     * request. Time between requests grows exponentially to make brute
+     * force attacks unfeasible.
      * @param string $id       Identifier of the user
      * @param string $password Password of the user
      * @return AccessToken|bool An access token if the user correctly
@@ -93,11 +103,22 @@ final class AuthProvider
      */
     public function authenticate($id, $password)
     {
-        $query = "SELECT password FROM authentic_user WHERE id = ?";
+        $query = "SELECT password, failed_login, last_attempt "
+               . "FROM authentic_user WHERE id = ?";
         $stm   = $this->dbh->prepare($query);
         $stm->execute([$id]);
 
         $record = $stm->fetch();
+
+        // Waits an exponential time between failed login attempts
+        $now = time();
+        $failed_login = min($record['failed_login'], self::MAX_DELAY);
+        $last_attempt = $record['last_attempt'];
+        if ($last_attempt + pow(2, $failed_login) > $now) {
+            return false;
+        }
+
+        // Checks password
         if (!password_verify($password, $record['password'])) {
             $this->loginFail($id);
             return false;
@@ -140,7 +161,7 @@ final class AuthProvider
      */
     public function logout($id)
     {
-        $query = "UPDATE authentic_user SET access_token = '' WHERE id = :id";
+        $query = "UPDATE authentic_user SET access_token = NULL WHERE id = :id";
         $stm   = $this->dbh->prepare($query);
         $stm->bindParam(':id', $id);
         $stm->execute();
@@ -176,13 +197,13 @@ final class AuthProvider
     private function loginSuccess($id, $access_token)
     {
         $query = "UPDATE authentic_user "
-               . "SET access_token = :access_token, last_login = :last_login, "
-               . "failed_login = 0 "
+               . "SET access_token = :access_token, last_login = :now, "
+               . "failed_login = 0, last_attempt = :now "
                . "WHERE id = :id";
         $stm   = $this->dbh->prepare($query);
         $stm->bindParam(':id', $id);
         $stm->bindParam(':access_token', $access_token);
-        $stm->bindParam(':last_login', $now);
+        $stm->bindParam(':now', $now);
 
         $now = time();
 
@@ -208,13 +229,15 @@ final class AuthProvider
 
         $attempts = $record['failed_login'] or 0;
         $attempts++;
+        $now      = time();
 
         $query = "UPDATE authentic_user "
-               . "SET failed_login = :attempts "
+               . "SET failed_login = :attempts, last_attempt = :now "
                . "WHERE id = :id";
         $stm   = $this->dbh->prepare($query);
         $stm->bindParam(':id', $id);
         $stm->bindParam(':attempts', $attempts);
+        $stm->bindParam(':now', $now);
         $stm->execute();
 
         return $this;
