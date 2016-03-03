@@ -46,17 +46,18 @@ The whole process is as simple as:
 
 
 ## Dependencies
-PHP >= 5.4 is required. There are no other dependecies.
+PHP >= 5.4 and a MySQL database are required. There are no other dependecies.
 
 
 ## Install
 - Copy PHP files into destination folder (namely *authentic*)
-- Create the *authentic_user* table (you can use the *database.sql* script)
-- Create the *authentic.ini* file with information about your database:
-```
-[database]
-host = your_host
-name = your_database_name
-user = your_user
-pass = your_password
-```
+- Create the *authentic_user* table (use the *database.sql* script)
+- Create the *authentic.ini* file with information about your database
+  and place it in the same directory:
+  ```
+  [database]
+  host = your_host
+  name = your_database_name
+  user = your_user
+  pass = your_password
+  ```
