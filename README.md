@@ -3,9 +3,10 @@ _PHP library for secure user authentication_
 
 ## Table of contents
 1. [What is this?](#what-is-this)
-2. [How it works](#how-it-works)
-3. [Dependencies](#dependencies)
-4. [Install](#install)
+1. [How it works](#how-it-works)
+1. [Features](#features)
+1. [Dependencies](#dependencies)
+1. [Install](#install)
 
 
 ## What is this
@@ -43,6 +44,25 @@ The whole process is as simple as:
    **clients** (either different processes, different machines or
    different people); those **clients** will be authenticated as original
    one
+
+
+## Features
+Authentic automatically deals with:
+- SQL Injections attacks
+- brute force attacks
+- password encryption
+- hash-table/rainbow-table based attacks
+- time-based attacks during password checking
+
+Authentic can be used to:
+- authomatically handle interaction with database during authentication
+- create shareable sessions trhough access tokens
+- avoid replay attacks by periodically regenerating access tokens
+
+Do not forget Authentic is about secure authentication: all the rest is
+up to you. In particular, remember:
+- username and password are sent just once: make sure channel is secure
+- it's up to you and/or users decide how to share their access tokens
 
 
 ## Dependencies
