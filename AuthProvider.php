@@ -153,6 +153,40 @@ final class AuthProvider
 
 
     /**
+     * Updates access token of an user.
+     * If user is not connected, access token cannot be updated.
+     * @param string $id Identifier of user to refresh
+     * @return string|false New access token, or false if user is not
+     *                      connected
+     */
+    public function refresh($id)
+    {
+        $query = "SELECT access_token FROM authentic_user WHERE id = ?";
+        $stm   = $this->dbh->prepare($query);
+        $stm->execute([$id]);
+
+        // Returns false if user is not connected
+        $record = $stm->fetch();
+        if (empty($record['access_token'])) {
+            return false;
+        }
+
+        // Updates access token
+        $access_token = new AccessToken($id);
+        $query = "UPDATE authentic_user "
+               . "SET access_token = :access_token "
+               . "WHERE id = :id";
+        $stm   = $this->dbh->prepare($query);
+        $stm->bindParam(':access_token', $access_token);
+        $stm->bindParam(':id', $id);
+        $stm->execute();
+
+        return $access_token;
+    }
+
+
+
+    /**
      * Logs out an user.
      * Access token is destroyed.
      * @param string $id Identifier of the user
