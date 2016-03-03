@@ -50,4 +50,13 @@ PHP >= 5.4 is required. There are no other dependecies.
 
 
 ## Install
-To do
+- Copy PHP files into destination folder (namely *authentic*)
+- Create the *authentic_user* table (you can use the *database.sql* script)
+- Create the *authentic.ini* file with information about your database:
+```
+[database]
+host = your_host
+name = your_database_name
+user = your_user
+pass = your_password
+```
